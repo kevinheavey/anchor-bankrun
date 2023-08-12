@@ -125,16 +125,16 @@ export class BankrunProvider implements Provider {
 		const recentBlockhash = (await this.connection.getLatestBlockhash())
 			.blockhash;
 
-		let txs = txWithSigners.map((r) => {
+		const txs = txWithSigners.map((r) => {
 			if ("version" in r.tx) {
-				let tx: VersionedTransaction = r.tx;
+				const tx: VersionedTransaction = r.tx;
 				if (r.signers) {
 					tx.sign(r.signers);
 				}
 				return tx;
 			} else {
-				let tx: Transaction = r.tx;
-				let signers = r.signers ?? [];
+				const tx: Transaction = r.tx;
+				const signers = r.signers ?? [];
 
 				tx.feePayer = tx.feePayer ?? this.wallet.publicKey;
 				tx.recentBlockhash = recentBlockhash;
