@@ -20,6 +20,7 @@ import { SuccessfulTxSimulationResponse } from "@coral-xyz/anchor/dist/cjs/utils
 
 interface ConnectionInterface {
 	getAccountInfo: Connection["getAccountInfo"];
+	getAccountInfoAndContext: Connection["getAccountInfoAndContext"];
 	getMinimumBalanceForRentExemption: Connection["getMinimumBalanceForRentExemption"];
   }
   
