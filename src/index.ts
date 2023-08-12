@@ -16,12 +16,16 @@ import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { SuccessfulTxSimulationResponse } from "@coral-xyz/anchor/dist/cjs/utils/rpc";
 
 export class BankrunProvider implements Provider {
-	connection: Connection;
 	wallet: Wallet;
 
 	constructor(public context: ProgramTestContext) {
 		this.wallet = new NodeWallet(context.payer);
-		this.connection = new Connection("null");
+	}
+
+	get connection(): Connection {
+		throw new Error(
+			"BankrunProvider has no Connection object. This getter is just here to placate TypeScript",
+		);
 	}
 
 	async send?(
