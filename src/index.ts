@@ -1,12 +1,8 @@
 import {
-	AccountInfo,
 	Commitment,
 	ConfirmOptions,
 	Connection,
-	GetAccountInfoConfig,
-	GetLatestBlockhashConfig,
 	PublicKey,
-	RpcResponseAndContext,
 	SendOptions,
 	Signer,
 	Transaction,
@@ -14,54 +10,18 @@ import {
 	VersionedTransaction,
 } from "@solana/web3.js";
 import { Provider, Wallet } from "@coral-xyz/anchor";
-import { BanksClient, ProgramTestContext } from "solana-bankrun";
+import { ProgramTestContext } from "solana-bankrun";
 import bs58 from "bs58";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { SuccessfulTxSimulationResponse } from "@coral-xyz/anchor/dist/cjs/utils/rpc";
 
-interface ConnectionInterface {
-	getAccountInfoAndContext: Connection["getAccountInfoAndContext"];
-	getLatestBlockhash: Connection["getLatestBlockhash"];
-}
-
-class BankrunConnectionProxy implements ConnectionInterface {
-	constructor(private banksClient: BanksClient) {}
-	async getAccountInfoAndContext(
-		publicKey: PublicKey,
-		commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined,
-	): Promise<RpcResponseAndContext<AccountInfo<Buffer>>> {
-		const accountInfoBytes = await this.banksClient.getAccount(publicKey);
-		if (!accountInfoBytes)
-			throw new Error(`Could not find ${publicKey.toBase58()}`);
-		return {
-			context: { slot: Number(await this.banksClient.getSlot()) },
-			value: {
-				...accountInfoBytes,
-				data: Buffer.from(accountInfoBytes.data),
-			},
-		};
-	}
-	async getLatestBlockhash(
-		commitmentOrConfig?: Commitment | GetLatestBlockhashConfig | undefined,
-	): Promise<{ blockhash: string; lastValidBlockHeight: number }> {
-		const result = await this.banksClient.getLatestBlockhash();
-		if (!result) throw new Error("Could not get latest blockhash");
-		const [blockhash, lastValidBlockHeight] = result;
-		return {
-			blockhash,
-			lastValidBlockHeight: Number(lastValidBlockHeight),
-		};
-	}
-}
 export class BankrunProvider implements Provider {
 	connection: Connection;
 	wallet: Wallet;
 
-	constructor(private context: ProgramTestContext) {
+	constructor(public context: ProgramTestContext) {
 		this.wallet = new NodeWallet(context.payer);
-		this.connection = new BankrunConnectionProxy(
-			context.banksClient,
-		) as any as Connection; // uh
+		this.connection = new Connection("null");
 	}
 
 	async send?(
@@ -74,8 +34,8 @@ export class BankrunProvider implements Provider {
 		} else {
 			tx.feePayer = tx.feePayer ?? this.wallet.publicKey;
 			tx.recentBlockhash = (
-				await this.connection.getLatestBlockhash()
-			).blockhash;
+				await this.context.banksClient.getLatestBlockhash()
+			)[0];
 
 			signers?.forEach((signer) => tx.partialSign(signer));
 		}
@@ -101,8 +61,8 @@ export class BankrunProvider implements Provider {
 		} else {
 			tx.feePayer = tx.feePayer ?? this.wallet.publicKey;
 			tx.recentBlockhash = (
-				await this.connection.getLatestBlockhash()
-			).blockhash;
+				await this.context.banksClient.getLatestBlockhash()
+			)[0];
 
 			signers?.forEach((signer) => tx.partialSign(signer));
 		}
@@ -122,8 +82,9 @@ export class BankrunProvider implements Provider {
 		txWithSigners: { tx: T; signers?: Signer[] | undefined }[],
 		opts?: ConfirmOptions | undefined,
 	): Promise<string[]> {
-		const recentBlockhash = (await this.connection.getLatestBlockhash())
-			.blockhash;
+		const recentBlockhash = (
+			await this.context.banksClient.getLatestBlockhash()
+		)[0];
 
 		const txs = txWithSigners.map((r) => {
 			if ("version" in r.tx) {
@@ -158,9 +119,8 @@ export class BankrunProvider implements Provider {
 				sigs.push(bs58.encode(tx.signature));
 			}
 			await this.context.banksClient.processTransaction(tx);
-
-			return sigs;
 		}
+		return sigs;
 	}
 	async simulate(
 		tx: Transaction | VersionedTransaction,
@@ -176,8 +136,8 @@ export class BankrunProvider implements Provider {
 		} else {
 			tx.feePayer = tx.feePayer ?? this.wallet.publicKey;
 			tx.recentBlockhash = (
-				await this.connection.getLatestBlockhash()
-			).blockhash;
+				await this.context.banksClient.getLatestBlockhash()
+			)[0];
 
 			signers?.forEach((signer) => tx.partialSign(signer));
 		}
