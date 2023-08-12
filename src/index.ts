@@ -22,52 +22,55 @@ interface ConnectionInterface {
 	getAccountInfo: Connection["getAccountInfo"];
 	getAccountInfoAndContext: Connection["getAccountInfoAndContext"];
 	getMinimumBalanceForRentExemption: Connection["getMinimumBalanceForRentExemption"];
-  }
-  
-  class BankrunConnectionProxy implements ConnectionInterface {
+}
+
+class BankrunConnectionProxy implements ConnectionInterface {
 	constructor(private banksClient: BanksClient) {}
 	async getAccountInfoAndContext(
 		publicKey: PublicKey,
-		commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined
-	  ): Promise<RpcResponseAndContext<AccountInfo<Buffer>>> {
+		commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined,
+	): Promise<RpcResponseAndContext<AccountInfo<Buffer>>> {
 		const accountInfoBytes = await this.banksClient.getAccount(publicKey);
 		if (!accountInfoBytes)
-		  throw new Error(`Could not find ${publicKey.toBase58()}`);
+			throw new Error(`Could not find ${publicKey.toBase58()}`);
 		return {
-		  context: { slot: Number(await this.banksClient.getSlot()) },
-		  value: {
+			context: { slot: Number(await this.banksClient.getSlot()) },
+			value: {
+				...accountInfoBytes,
+				data: Buffer.from(accountInfoBytes.data),
+			},
+		};
+	}
+	async getAccountInfo(
+		publicKey: PublicKey,
+		commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined,
+	): Promise<AccountInfo<Buffer>> {
+		const accountInfoBytes = await this.banksClient.getAccount(publicKey);
+		if (!accountInfoBytes)
+			throw new Error(`Could not find ${publicKey.toBase58()}`);
+		return {
 			...accountInfoBytes,
 			data: Buffer.from(accountInfoBytes.data),
-		  },
 		};
-	  }
-	async getAccountInfo(
-	  publicKey: PublicKey,
-	  commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined
-	): Promise<AccountInfo<Buffer>> {
-	  const accountInfoBytes = await this.banksClient.getAccount(publicKey);
-	  if (!accountInfoBytes)
-		throw new Error(`Could not find ${publicKey.toBase58()}`);
-	  return {
-		  ...accountInfoBytes,
-		  data: Buffer.from(accountInfoBytes.data),
-	  };
 	}
-	async getMinimumBalanceForRentExemption(dataLength: number, commitment?: Commitment): Promise<number> {
+	async getMinimumBalanceForRentExemption(
+		dataLength: number,
+		commitment?: Commitment,
+	): Promise<number> {
 		const rent = await this.banksClient.getRent();
-		return Number(rent.minimumBalance(BigInt(dataLength)))
+		return Number(rent.minimumBalance(BigInt(dataLength)));
 	}
-  }
+}
 
 export class BankrunProvider implements Provider {
 	wallet: Wallet;
-	connection: Connection
+	connection: Connection;
 
 	constructor(public context: ProgramTestContext) {
 		this.wallet = new NodeWallet(context.payer);
 		this.connection = new BankrunConnectionProxy(
-			context.banksClient
-		  ) as unknown as Connection; // uh
+			context.banksClient,
+		) as unknown as Connection; // uh
 	}
 
 	async send?(
