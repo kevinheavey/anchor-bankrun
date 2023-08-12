@@ -1,8 +1,11 @@
 import {
+	AccountInfo,
 	Commitment,
 	ConfirmOptions,
 	Connection,
+	GetAccountInfoConfig,
 	PublicKey,
+	RpcResponseAndContext,
 	SendOptions,
 	Signer,
 	Transaction,
@@ -10,22 +13,60 @@ import {
 	VersionedTransaction,
 } from "@solana/web3.js";
 import { Provider, Wallet } from "@coral-xyz/anchor";
-import { ProgramTestContext } from "solana-bankrun";
+import { BanksClient, ProgramTestContext } from "solana-bankrun";
 import bs58 from "bs58";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { SuccessfulTxSimulationResponse } from "@coral-xyz/anchor/dist/cjs/utils/rpc";
 
+interface ConnectionInterface {
+	getAccountInfo: Connection["getAccountInfo"];
+	getMinimumBalanceForRentExemption: Connection["getMinimumBalanceForRentExemption"];
+  }
+  
+  class BankrunConnectionProxy implements ConnectionInterface {
+	constructor(private banksClient: BanksClient) {}
+	async getAccountInfoAndContext(
+		publicKey: PublicKey,
+		commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined
+	  ): Promise<RpcResponseAndContext<AccountInfo<Buffer>>> {
+		const accountInfoBytes = await this.banksClient.getAccount(publicKey);
+		if (!accountInfoBytes)
+		  throw new Error(`Could not find ${publicKey.toBase58()}`);
+		return {
+		  context: { slot: Number(await this.banksClient.getSlot()) },
+		  value: {
+			...accountInfoBytes,
+			data: Buffer.from(accountInfoBytes.data),
+		  },
+		};
+	  }
+	async getAccountInfo(
+	  publicKey: PublicKey,
+	  commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined
+	): Promise<AccountInfo<Buffer>> {
+	  const accountInfoBytes = await this.banksClient.getAccount(publicKey);
+	  if (!accountInfoBytes)
+		throw new Error(`Could not find ${publicKey.toBase58()}`);
+	  return {
+		  ...accountInfoBytes,
+		  data: Buffer.from(accountInfoBytes.data),
+	  };
+	}
+	async getMinimumBalanceForRentExemption(dataLength: number, commitment?: Commitment): Promise<number> {
+		const rent = await this.banksClient.getRent();
+		return Number(rent.minimumBalance(BigInt(dataLength)))
+	}
+  }
+
 export class BankrunProvider implements Provider {
 	wallet: Wallet;
+	connection: Connection
 
 	constructor(public context: ProgramTestContext) {
 		this.wallet = new NodeWallet(context.payer);
-	}
-
-	get connection(): Connection {
-		throw new Error(
-			"BankrunProvider has no Connection object. This getter is just here to placate TypeScript",
-		);
+		this.connection = new BankrunConnectionProxy(
+			context.banksClient
+		  ) as unknown as Connection; // uh
 	}
 
 	async send?(
