@@ -1,0 +1,36 @@
+{
+	"name": "anchor-bankrun",
+	"version": "0.1.0",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": ["dist/"],
+	"license": "MIT",
+	"devDependencies": {
+		"bs58": "^4.0.1",
+		"@types/bs58": "^4.0.1",
+		"@types/jest": "^29.5.3",
+		"@types/node-fetch": "^2.6.4",
+		"jest": "^29.6.1",
+		"rome": "^12.0.0",
+		"ts-jest": "^29.1.1",
+		"ts-node": "^10.9.1",
+		"typescript": "^5.0.4"
+	},
+	"engines": {
+		"node": ">= 10"
+	},
+	"scripts": {
+		"fmt": "rome format --write src/index.ts tests/ jest.config.ts tsconfig.json package.json",
+		"lint": "rome check src/index.ts tests/ jest.config.ts tsconfig.json package.json",
+		"test": "RUST_LOG= jest --runInBand",
+		"tsc": "tsc",
+		"bumpPatch": "yarn version --patch",
+		"bumpMinor": "yarn version --minor",
+		"bumpMajor": "yarn version --major"
+	},
+	"packageManager": "yarn@3.5.1",
+	"dependencies": {
+		"solana-bankrun": "^0.1.0",
+		"@coral-xyz/anchor": "^0.28.0"
+	}
+}
