@@ -39,6 +39,5 @@ test("anchor", async () => {
 	const dataAccount = await puppetProgram.account.data.fetch(
 		puppetKeypair.publicKey,
 	);
-	console.log(dataAccount);
 	expect(dataAccount.data.eq(new BN(123456)));
 });
