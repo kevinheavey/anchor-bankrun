@@ -730,6 +730,13 @@
   dependencies:
     "@babel/types" "^7.20.7"
 
+"@types/bn.js@^5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-5.1.1.tgz#b51e1b55920a4ca26e9285ff79936bbdec910682"
+  integrity sha512-qNrYbZqMx0uJAfKnKclPh+dTwK33KfLHYqtyODwd5HnXOjnkhc4qgn3BrK6RWyGZm5+sIFE7Q7Vz6QQtJB7w7g==
+  dependencies:
+    "@types/node" "*"
+
 "@types/bs58@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@types/bs58/-/bs58-4.0.1.tgz#3d51222aab067786d3bc3740a84a7f5a0effaa37"
@@ -2440,44 +2447,44 @@ snake-case@^3.0.4:
     dot-case "^3.0.4"
     tslib "^2.0.3"
 
-solana-bankrun-darwin-arm64@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/solana-bankrun-darwin-arm64/-/solana-bankrun-darwin-arm64-0.1.0.tgz#142fed2b72b3faf03ac5780131fa2dc6f2c51925"
-  integrity sha512-EG+zQuJ+L7orZf2QSQqNL5JrFw1LbVTmoJ5w7LO+LjxxQoGjyZknRswtsOav4V9nVAbozOzT+u1v5WB7BnaCuQ==
+solana-bankrun-darwin-arm64@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/solana-bankrun-darwin-arm64/-/solana-bankrun-darwin-arm64-0.1.1.tgz#8854c9047f17c8822f7a85dc7c624e51a21efc25"
+  integrity sha512-BYGrp9bWVaHKvPthKSLTCXWK7zXtH2m4YM6mJg0rCvJeSoRJt7S5K2JER4gXm0LglDXeD5Bg7NL+QM24t2kQmg==
 
-solana-bankrun-darwin-universal@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/solana-bankrun-darwin-universal/-/solana-bankrun-darwin-universal-0.1.0.tgz#b7c14d3c9af06d0444e79f2d0e0f7ec0bf67c4fc"
-  integrity sha512-30zoJFzEHlrVosGIWqpVNw02tTomrIvuBWmxKagYIM6UmCF7xJ8iWr+vc8eW3Gtc9DKm24jHuoRK+LAt7M4Y7Q==
+solana-bankrun-darwin-universal@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/solana-bankrun-darwin-universal/-/solana-bankrun-darwin-universal-0.1.1.tgz#c4c7a9d1ec9b38ad466e07fabbae7ae630a4da17"
+  integrity sha512-c/knJppc7hlmEBwKmFyQhAcGiIvh8UgteEn9CwsfcqpUZpu2qCDSV3+VJmcGmuYNlXt+IEK9lTcTD6qu6EoM6w==
 
-solana-bankrun-darwin-x64@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/solana-bankrun-darwin-x64/-/solana-bankrun-darwin-x64-0.1.0.tgz#00b97cc05468ae30dde96e7dc40749e22bf9bfe3"
-  integrity sha512-CPkuEp55hjb/gdNnbWFFmebCwFlBMDLvDtLeBJ60eaGphHEfPqb/Tw+bckoxDaw2bivjdjWWu0t71sT8Jj5fsQ==
+solana-bankrun-darwin-x64@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/solana-bankrun-darwin-x64/-/solana-bankrun-darwin-x64-0.1.1.tgz#8c94e30c72ddc2451dfc0a9f2b750f2e5dba0aab"
+  integrity sha512-SMefIPsRVzhRXFpl0lcB+zNNm00b02yfm0cl+G3Abcm0v80Me7dNyv7QSLmwBzRXraSJOgHfobSfp610r9GA3g==
 
-solana-bankrun-linux-x64-gnu@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/solana-bankrun-linux-x64-gnu/-/solana-bankrun-linux-x64-gnu-0.1.0.tgz#761c4c97d5751e1d10e8f3524e4d5a9fe88ad718"
-  integrity sha512-t5hx8K39mGuI+/sDmJGqR3H2fmywS0/Fy1WFtoryMt1mM9Yd/y4GHrizGPejxXg9hYd1XWulR/7iL46TBatakg==
+solana-bankrun-linux-x64-gnu@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/solana-bankrun-linux-x64-gnu/-/solana-bankrun-linux-x64-gnu-0.1.1.tgz#71cf5ee31ea7fdbc49580faf14bc82c915c46ed7"
+  integrity sha512-l4YUpD6Lkv0I2WHIAg6vNTQXTIARanGyMM8WozFqYlcyYKWm/iR8MQ/+HxCcUnbSpsFX02eYq8GiBbzjNaCiuA==
 
-solana-bankrun-linux-x64-musl@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/solana-bankrun-linux-x64-musl/-/solana-bankrun-linux-x64-musl-0.1.0.tgz#d02454b3deaca3ffa09e5b5a68630fafeffd3e0b"
-  integrity sha512-jRSohZQiMmv+yYrQzIkolEDZoV5BdMzDVBG720QieMRhlqFkB4RZsGnV3oenYb0q9Dgx3KAeS0WS98kVPKPD+g==
+solana-bankrun-linux-x64-musl@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/solana-bankrun-linux-x64-musl/-/solana-bankrun-linux-x64-musl-0.1.1.tgz#c2d10366acbb1d2ac85f4fa137a01230b1c92b5a"
+  integrity sha512-w9CtdJav2esrJISurzCiqk2hiJSqHrzmJkrnZoA22PjqrfCYRCX7zLnB4RQfZN9dM7/U8Z5z8LoMR55EhXQ7Tw==
 
-solana-bankrun@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/solana-bankrun/-/solana-bankrun-0.1.0.tgz#6d9cc92d9bc143d7c125309f4722c5fb1662a5e4"
-  integrity sha512-TnhmNPWxEtV/+75QmzEj9xdytC91qgpamm+Gx7dvxyFQ9zbCWNh56WRtbzbNl91wguEJ4VxQ7cZJmB82sa9xvA==
+solana-bankrun@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/solana-bankrun/-/solana-bankrun-0.1.1.tgz#d1a1752de6a14dd4e215bb318b5c85100dfe2719"
+  integrity sha512-JkoU7yEyaJAZDMw5wGsFXOI/BNTk1lwcPX6Kgg9dBrCo0xs1VTn/ipwjKXwdRFLKF9N2kt4x+bLAipDp7W6GiA==
   dependencies:
     "@solana/web3.js" "^1.68.0"
     bs58 "^4.0.1"
   optionalDependencies:
-    solana-bankrun-darwin-arm64 "0.1.0"
-    solana-bankrun-darwin-universal "0.1.0"
-    solana-bankrun-darwin-x64 "0.1.0"
-    solana-bankrun-linux-x64-gnu "0.1.0"
-    solana-bankrun-linux-x64-musl "0.1.0"
+    solana-bankrun-darwin-arm64 "0.1.1"
+    solana-bankrun-darwin-universal "0.1.1"
+    solana-bankrun-darwin-x64 "0.1.1"
+    solana-bankrun-linux-x64-gnu "0.1.1"
+    solana-bankrun-linux-x64-musl "0.1.1"
 
 source-map-support@0.5.13:
   version "0.5.13"
