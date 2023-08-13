@@ -25,9 +25,9 @@
 		"lint": "rome check src/index.ts tests/ jest.config.ts tsconfig.json package.json",
 		"test": "RUST_LOG= jest --runInBand",
 		"tsc": "tsc",
-		"bumpPatch": "yarn version --patch",
-		"bumpMinor": "yarn version --minor",
-		"bumpMajor": "yarn version --major"
+		"bumpPatch": "yarn version --no-git-tag-version --patch",
+		"bumpMinor": "yarn version --no-git-tag-version --minor",
+		"bumpMajor": "yarn version --no-git-tag-version --major"
 	},
 	"packageManager": "yarn@3.5.1",
 	"dependencies": {
