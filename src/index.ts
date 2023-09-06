@@ -65,12 +65,14 @@ class BankrunConnectionProxy implements ConnectionInterface {
 export class BankrunProvider implements Provider {
 	wallet: Wallet;
 	connection: Connection;
+	publicKey: PublicKey;
 
-	constructor(public context: ProgramTestContext) {
-		this.wallet = new NodeWallet(context.payer);
+	constructor(public context: ProgramTestContext, wallet?: Wallet) {
+		this.wallet = wallet || new NodeWallet(context.payer);
 		this.connection = new BankrunConnectionProxy(
 			context.banksClient,
 		) as unknown as Connection; // uh
+		this.publicKey = this.wallet.publicKey;
 	}
 
 	async send?(
