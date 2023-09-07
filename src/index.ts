@@ -11,7 +11,7 @@ import {
 	Transaction,
 	TransactionSignature,
 	VersionedTransaction,
-	SendTransactionError
+	SendTransactionError,
 } from "@solana/web3.js";
 import { Provider, Wallet } from "@coral-xyz/anchor";
 import { BanksClient, ProgramTestContext } from "solana-bankrun";
@@ -63,7 +63,10 @@ class BankrunConnectionProxy implements ConnectionInterface {
 	}
 }
 
-async function sendWithErr(tx: Transaction | VersionedTransaction, client: BanksClient) {
+async function sendWithErr(
+	tx: Transaction | VersionedTransaction,
+	client: BanksClient,
+) {
 	const res = await client.tryProcessTransaction(tx);
 	const errMsg = res.result;
 	if (errMsg !== null) {
