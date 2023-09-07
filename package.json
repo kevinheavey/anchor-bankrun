@@ -32,6 +32,6 @@
 	"packageManager": "yarn@3.5.1",
 	"dependencies": {
 		"@coral-xyz/anchor": "^0.28.0",
-		"solana-bankrun": "^0.1.1"
+		"solana-bankrun": "^0.2.0"
 	}
 }
