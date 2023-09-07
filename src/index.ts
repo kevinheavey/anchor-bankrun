@@ -11,6 +11,7 @@ import {
 	Transaction,
 	TransactionSignature,
 	VersionedTransaction,
+	SendTransactionError
 } from "@solana/web3.js";
 import { Provider, Wallet } from "@coral-xyz/anchor";
 import { BanksClient, ProgramTestContext } from "solana-bankrun";
@@ -59,6 +60,15 @@ class BankrunConnectionProxy implements ConnectionInterface {
 	): Promise<number> {
 		const rent = await this.banksClient.getRent();
 		return Number(rent.minimumBalance(BigInt(dataLength)));
+	}
+}
+
+async function sendWithErr(tx: Transaction | VersionedTransaction, client: BanksClient) {
+	const res = await client.tryProcessTransaction(tx);
+	const errMsg = res.result;
+	if (errMsg !== null) {
+		const logs = res.meta.logMessages;
+		throw new SendTransactionError(errMsg, logs);
 	}
 }
 
@@ -126,7 +136,7 @@ export class BankrunProvider implements Provider {
 			if (!tx.signature) throw new Error("Missing fee payer signature");
 			signature = bs58.encode(tx.signature);
 		}
-		await this.context.banksClient.processTransaction(tx);
+		await sendWithErr(tx, this.context.banksClient);
 		return signature;
 	}
 	async sendAll<T extends Transaction | VersionedTransaction>(
@@ -169,7 +179,7 @@ export class BankrunProvider implements Provider {
 			} else {
 				sigs.push(bs58.encode(tx.signature));
 			}
-			await this.context.banksClient.processTransaction(tx);
+			await sendWithErr(tx, this.context.banksClient);
 		}
 		return sigs;
 	}
