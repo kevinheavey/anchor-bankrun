@@ -68,10 +68,15 @@ async function sendWithErr(
 	client: BanksClient,
 ) {
 	const res = await client.tryProcessTransaction(tx);
+	const maybeMeta = res.meta;
 	const errMsg = res.result;
 	if (errMsg !== null) {
-		const logs = res.meta.logMessages;
-		throw new SendTransactionError(errMsg, logs);
+		if (maybeMeta !== null) {
+			const logs = maybeMeta.logMessages;
+			throw new SendTransactionError(errMsg, logs);
+		} else {
+			throw new SendTransactionError(errMsg);
+		}
 	}
 }
 
