@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.0] - Unreleased
+
+- Make `@solana/web3.js` a peer dependency [(#5)](https://github.com/kevinheavey/anchor-bankrun/pull/5)
+- Correctly handle missing transaction logs [(#10)](https://github.com/kevinheavey/anchor-bankrun/pull/10)
+
 ## [0.2.0] - 2023-09-08
 
 - Add better support for Anchor-like errors [(#6)](https://github.com/kevinheavey/anchor-bankrun/pull/6)
