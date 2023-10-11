@@ -1,11 +1,19 @@
 import { startAnchor } from "solana-bankrun";
 import { BankrunProvider } from "anchor-bankrun";
-import { Keypair, PublicKey, SendTransactionError } from "@solana/web3.js";
+import { Keypair, PublicKey, SendTransactionError, SystemProgram } from "@solana/web3.js";
 import { BN, Program } from "@coral-xyz/anchor";
 import { IDL as PuppetIDL, Puppet } from "./anchor-example/puppet";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
+import { Callee, IDL as CalleeIDL } from "./cpi-returns/callee";
+import { Caller, IDL as CallerIDL } from "./cpi-returns/caller";
 
 const PUPPET_PROGRAM_ID = new PublicKey(
+	"Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS",
+);
+const CALLER_PROGRAM_ID = new PublicKey(
+	"HmbTLCmaGvZhKnn1Zfa1JVnp7vkMV4DYVxPLWBVoN65L",
+);
+const CALLEE_PROGRAM_ID = new PublicKey(
 	"Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS",
 );
 
@@ -101,3 +109,44 @@ test("bankrun provider with wallet", async () => {
 
 	expect(wallet.publicKey.equals(newProvider.publicKey));
 });
+
+
+test("CPI return", async () => {
+	console.log("calling startAnchor");
+	const context = await startAnchor("tests/cpi-returns", [], []);
+	console.log("creating provider");
+	const provider = new BankrunProvider(context);
+	const callerProgram = new Program<Caller>(
+		CallerIDL,
+		CALLER_PROGRAM_ID,
+		provider,
+	);
+	const calleeProgram = new Program<Callee>(
+		CalleeIDL,
+		CALLEE_PROGRAM_ID,
+		provider,
+	);
+	const cpiReturn = Keypair.generate();
+  
+
+	  await calleeProgram.methods
+		  .initialize()
+		  .accounts({
+		  account: cpiReturn.publicKey,
+		  user: provider.wallet.publicKey,
+		  systemProgram: SystemProgram.programId,
+		  })
+		  .signers([cpiReturn])
+		  .rpc();
+  
+	  await callerProgram.methods
+		.cpiCallReturnU64()
+		.accounts({
+		  cpiReturn: cpiReturn.publicKey,
+		  cpiReturnProgram: calleeProgram.programId,
+		})
+		.rpc();
+	  const viewRes = await callerProgram.methods.returnU64().view();
+	  expect(viewRes.eq(new BN(99)));
+  });
+  
