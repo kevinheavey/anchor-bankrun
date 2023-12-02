@@ -34,7 +34,7 @@
 		"bumpMinor": "yarn version --no-git-tag-version --minor",
 		"bumpMajor": "yarn version --no-git-tag-version --major"
 	},
-	"packageManager": "yarn@3.5.1",
+	"packageManager": "yarn@1.22.19",
 	"peerDependencies": {
 		"@coral-xyz/anchor": "^0.28.0",
 		"@solana/web3.js": "^1.78.4",
