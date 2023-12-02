@@ -22,7 +22,7 @@ jobs:
           node-version: 18
           check-latest: true
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile
       - name: Lint
         run: yarn lint
       - name: test
