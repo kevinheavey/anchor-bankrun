@@ -14,8 +14,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - run: corepack enable
       - uses: actions/checkout@v3
+      - run: corepack enable
       - name: Setup node
         uses: actions/setup-node@v3
         with:
