@@ -5,9 +5,6 @@ import { BN, Program } from "@coral-xyz/anchor";
 import { Puppet } from "./anchor-example/puppet";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 
-const PUPPET_PROGRAM_ID = new PublicKey(
-	"Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS",
-);
 const IDL = require("./anchor-example/puppet.json");
 
 test("anchor", async () => {
