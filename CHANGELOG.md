@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.0] - 2024-06-29
+
+- BREAKING: Update to Anchor v0.30 [(#15)](https://github.com/kevinheavey/anchor-bankrun/pull/15)
+
 ## [0.3.0] - 2023-12-02
 
 - Make `@solana/web3.js` a peer dependency [(#5)](https://github.com/kevinheavey/anchor-bankrun/pull/5)
