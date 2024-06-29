@@ -8,7 +8,7 @@
 	],
 	"license": "MIT",
 	"devDependencies": {
-		"@coral-xyz/anchor": "^0.28.0",
+		"@coral-xyz/anchor": "^0.30.0",
 		"@solana/web3.js": "^1.78.4",
 		"@types/bn.js": "^5.1.1",
 		"@types/bs58": "^4.0.1",
@@ -36,7 +36,7 @@
 	},
 	"packageManager": "yarn@1.22.19",
 	"peerDependencies": {
-		"@coral-xyz/anchor": "^0.28.0",
+		"@coral-xyz/anchor": "^0.30.0",
 		"@solana/web3.js": "^1.78.4",
 		"solana-bankrun": "^0.2.0"
 	}
