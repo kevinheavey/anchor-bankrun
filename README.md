@@ -12,11 +12,8 @@ import { startAnchor } from "solana-bankrun";
 import { BankrunProvider } from "anchor-bankrun";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { BN, Program } from "@coral-xyz/anchor";
-import { IDL as PuppetIDL, Puppet } from "./anchor-example/puppet";
-
-const PUPPET_PROGRAM_ID = new PublicKey(
-	"Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS",
-);
+import { Puppet } from "./anchor-example/puppet";
+const IDL = require("./anchor-example/puppet.json");
 
 test("anchor", async () => {
 	const context = await startAnchor("tests/anchor-example", [], []);
@@ -24,8 +21,7 @@ test("anchor", async () => {
 	const provider = new BankrunProvider(context);
 
 	const puppetProgram = new Program<Puppet>(
-		PuppetIDL,
-		PUPPET_PROGRAM_ID,
+		IDL,
 		provider,
 	);
 
