@@ -3,9 +3,7 @@
 	"version": "0.4.0",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
-	"files": [
-		"dist/"
-	],
+	"files": ["dist/"],
 	"license": "MIT",
 	"devDependencies": {
 		"@coral-xyz/anchor": "^0.30.0",

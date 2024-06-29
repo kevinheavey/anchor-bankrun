@@ -11,10 +11,7 @@ test("anchor", async () => {
 
 	const provider = new BankrunProvider(context);
 
-	const puppetProgram = new Program<Puppet>(
-		IDL,
-		provider,
-	);
+	const puppetProgram = new Program<Puppet>(IDL, provider);
 
 	const puppetKeypair = Keypair.generate();
 	await puppetProgram.methods
@@ -44,10 +41,7 @@ test("error test", async () => {
 
 	const provider = new BankrunProvider(context);
 
-	const puppetProgram = new Program<Puppet>(
-		IDL,
-		provider,
-	);
+	const puppetProgram = new Program<Puppet>(IDL, provider);
 
 	const puppetKeypair = Keypair.generate();
 	await puppetProgram.methods
