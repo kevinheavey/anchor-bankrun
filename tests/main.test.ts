@@ -73,7 +73,7 @@ The program expected this account to be already initialized.";
 			.rpc();
 	};
 	await expect(wrap).rejects.toThrow(new SendTransactionError(expectedMsg));
-	await expect(wrap).rejects.toHaveProperty("logs", expectedLogs);
+	await expect(wrap).rejects.toHaveProperty("resolvedLogs", expectedLogs);
 });
 
 test("bankrun provider with wallet", async () => {
