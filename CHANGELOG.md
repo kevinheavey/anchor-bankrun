@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.1] - 2024-09-12
+
+- Restrict solana/web3.js to <1.92 to avoid breaking change they introduced
+
 ## [0.4.0] - 2024-06-29
 
 - BREAKING: Update to Anchor v0.30 [(#15)](https://github.com/kevinheavey/anchor-bankrun/pull/15)
