@@ -73,9 +73,19 @@ async function sendWithErr(
 	if (errMsg !== null) {
 		if (maybeMeta !== null) {
 			const logs = maybeMeta.logMessages;
-			throw new SendTransactionError(errMsg, logs);
+			throw new SendTransactionError({
+				action: "send",
+				signature: "",
+				transactionMessage: errMsg,
+				logs: logs,
+			});
 		} else {
-			throw new SendTransactionError(errMsg);
+			throw new SendTransactionError({
+				action: "send",
+				signature: "",
+				transactionMessage: errMsg,
+				logs: [],
+			});
 		}
 	}
 }
