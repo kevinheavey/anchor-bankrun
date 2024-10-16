@@ -54,9 +54,7 @@ test("error test", async () => {
 
 	const data = new BN(123456);
 	const expectedMsg =
-		"AnchorError caused by account: puppet. Error Code: AccountNotInitialized. \
-Error Number: 3012. Error Message: \
-The program expected this account to be already initialized.";
+		"AnchorError caused by account: puppet. Error Code: AccountNotInitialized.";
 	const expectedLogs = [
 		"Program Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS invoke [1]",
 		"Program log: Instruction: SetData",
@@ -64,6 +62,7 @@ The program expected this account to be already initialized.";
 		"Program Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS consumed 3621 of 200000 compute units",
 		"Program Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS failed: custom program error: 0xbc4",
 	];
+
 	const wrap = async () => {
 		await puppetProgram.methods
 			.setData(data)
@@ -72,7 +71,12 @@ The program expected this account to be already initialized.";
 			})
 			.rpc();
 	};
-	await expect(wrap).rejects.toThrow(new SendTransactionError(expectedMsg));
+	await expect(wrap).rejects.toThrow(
+		expect.objectContaining({
+			message: expect.stringContaining(expectedMsg),
+		}),
+	);
+
 	await expect(wrap).rejects.toHaveProperty("logs", expectedLogs);
 });
 
