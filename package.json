@@ -25,7 +25,7 @@
 	},
 	"scripts": {
 		"fmt": "rome format --write src/index.ts tests/ jest.config.ts tsconfig.json package.json",
-		"lint": "rome check src/index.ts tests/ jest.config.ts tsconfig.json package.json",
+		"lint": "rome check src/index.ts tests/ jest.config.ts tsconfig.json package.json && tsc",
 		"test": "RUST_LOG= jest --runInBand",
 		"tsc": "tsc",
 		"bumpPatch": "yarn version --no-git-tag-version --patch",
