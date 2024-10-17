@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.0] - 2024-10-18
+
+- Re-export `startAnchor` from `solana-bankrun`
+- Require `solana/web3.js` >1.92.0 and fix SendTransactionError construction
+
 ## [0.4.1] - 2024-09-12
 
 - Restrict solana/web3.js to <1.92 to avoid breaking change they introduced
