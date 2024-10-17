@@ -18,6 +18,7 @@ import { BanksClient, ProgramTestContext } from "solana-bankrun";
 import bs58 from "bs58";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { SuccessfulTxSimulationResponse } from "@coral-xyz/anchor/dist/cjs/utils/rpc";
+export { startAnchor } from "solana-bankrun";
 
 interface ConnectionInterface {
 	getAccountInfo: Connection["getAccountInfo"];
