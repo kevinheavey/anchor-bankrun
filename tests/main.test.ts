@@ -1,5 +1,4 @@
-import { startAnchor } from "solana-bankrun";
-import { BankrunProvider } from "anchor-bankrun";
+import { BankrunProvider, startAnchor } from "anchor-bankrun";
 import { Keypair, PublicKey, SendTransactionError } from "@solana/web3.js";
 import { BN, Program } from "@coral-xyz/anchor";
 import { Puppet } from "./anchor-example/puppet";

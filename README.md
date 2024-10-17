@@ -13,8 +13,7 @@ If you have an older IDL, use `anchor-bankrun` v0.3.0.
 Here's an example using `BankrunProvider` to test an Anchor program:
 
 ```typescript
-import { startAnchor } from "solana-bankrun";
-import { BankrunProvider } from "anchor-bankrun";
+import { BankrunProvider, startAnchor } from "anchor-bankrun";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { BN, Program } from "@coral-xyz/anchor";
 import { Puppet } from "./anchor-example/puppet";
