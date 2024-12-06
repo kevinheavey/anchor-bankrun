@@ -8,9 +8,11 @@ that enables using both Anchor and Bankrun with only a one-line code change. It 
 Recent versions of `anchor-bankrun` use the Anchor v0.30 IDL, which is not backwards compatible with older Anchor IDLs.
 If you have an older IDL, use `anchor-bankrun` v0.3.0.
 
-## Note on @solana/spl-token incompatibility
+## Note on the incompatibility with RPC wrappers
 
-The [@solana/spl-token](https://www.npmjs.com/package/@solana/spl-token) library is incompatible with [Bankrun](https://github.com/kevinheavey/solana-bankrun/tree/main). As an alternative, you can use the [spl-token-bankrun](https://www.npmjs.com/package/spl-token-bankrun) library which provides wrappers for the [@solana/spl-token](https://www.npmjs.com/package/@solana/spl-token) functions (such as `createMint()` and `mintTo()`).
+Because [Bankrun](https://github.com/kevinheavey/solana-bankrun/tree/main) doesn't include an RPC system (and, as a result, the `BankrunProvider.connection` field is empty), the libraries that require a valid `Connection` to be passed to their functions (such as the [@solana/spl-token](https://www.npmjs.com/package/@solana/spl-token) library) will not work with `anchor-bankrun`.
+
+As an alternative, you can use the [spl-token-bankrun](https://www.npmjs.com/package/spl-token-bankrun) library which provides wrappers for the [@solana/spl-token](https://www.npmjs.com/package/@solana/spl-token) functions (such as `createMint()` and `mintTo()`).
 
 ## Usage
 
