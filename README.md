@@ -1,34 +1,29 @@
-# anchor-bankrun
+# anchor-litesvm
 
-`anchor-bankrun` is a small but powerful extension to [solana-bankrun](https://github.com/kevinheavey/solana-bankrun)
-that enables using both Anchor and Bankrun with only a one-line code change. It does this by exporting a `BankrunProvider` class that can be used as a drop-in replacement for `AnchorProvider` during testing.
+`anchor-litesvm` is a small extension to [LiteSVM](https://github.com/LiteSVM/litesvm)
+that enables using both Anchor and LiteSVM with minimal code changes. It does this by exporting a `LitesvmProvider` class that can be used as a replacement for `AnchorProvider` during testing.
 
-## Anchor version note
+## Async note
 
-Recent versions of `anchor-bankrun` use the Anchor v0.30 IDL, which is not backwards compatible with older Anchor IDLs.
-If you have an older IDL, use `anchor-bankrun` v0.3.0.
+`litesvm` is synchronous because it is entirely compute-bound. However, `anchor-litesvm` uses async because
+it implements interfaces that require async. If you would like to avoid async tests, you can simply
+use regular `litesvm` without `anchor-litesvm`.
 
 ## Usage
 
-Here's an example using `BankrunProvider` to test an Anchor program:
+Here's an example using `LitesvmProvider` to test an Anchor program:
 
 ```typescript
-import { BankrunProvider, startAnchor } from "anchor-bankrun";
+import { fromWorkspace, LiteSVMProvider } from "anchor-litesvm";
 import { Keypair, PublicKey } from "@solana/web3.js";
-import { BN, Program } from "@coral-xyz/anchor";
+import { BN, Program, Wallet } from "@coral-xyz/anchor";
 import { Puppet } from "./anchor-example/puppet";
 const IDL = require("./anchor-example/puppet.json");
 
 test("anchor", async () => {
-	const context = await startAnchor("tests/anchor-example", [], []);
-
-	const provider = new BankrunProvider(context);
-
-	const puppetProgram = new Program<Puppet>(
-		IDL,
-		provider,
-	);
-
+	const client = fromWorkspace("tests/anchor-example");
+	const provider = new LiteSVMProvider(client);
+	const puppetProgram = new Program<Puppet>(IDL, provider);
 	const puppetKeypair = Keypair.generate();
 	await puppetProgram.methods
 		.initialize()
@@ -56,9 +51,5 @@ test("anchor", async () => {
 ## Installation
 
 ```
-yarn add anchor-bankrun
+yarn add anchor-litesvm
 ```
-
-## Why is this a separate package?
-
-I want to keep the Bankrun dependencies light.
