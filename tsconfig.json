@@ -11,7 +11,7 @@
 		"allowJs": true,
 		"baseUrl": "./src",
 		"paths": {
-			"anchor-litesvm": ["./"]
+			"anchor-bankrun": ["./"]
 		},
 		"resolveJsonModule": true,
 		"skipLibCheck": true
