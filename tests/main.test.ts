@@ -1,17 +1,13 @@
-import { BankrunProvider, startAnchor } from "anchor-bankrun";
+import { fromWorkspace, LiteSVMProvider } from "anchor-litesvm";
 import { Keypair, PublicKey } from "@solana/web3.js";
-import { BN, Program } from "@coral-xyz/anchor";
+import { BN, Program, Wallet } from "@coral-xyz/anchor";
 import { Puppet } from "./anchor-example/puppet";
-import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 const IDL = require("./anchor-example/puppet.json");
 
 test("anchor", async () => {
-	const context = await startAnchor("tests/anchor-example", [], []);
-
-	const provider = new BankrunProvider(context);
-
+	const client = fromWorkspace("tests/anchor-example");
+	const provider = new LiteSVMProvider(client);
 	const puppetProgram = new Program<Puppet>(IDL, provider);
-
 	const puppetKeypair = Keypair.generate();
 	await puppetProgram.methods
 		.initialize()
@@ -36,9 +32,8 @@ test("anchor", async () => {
 });
 
 test("error test", async () => {
-	const context = await startAnchor("tests/anchor-example", [], []);
-
-	const provider = new BankrunProvider(context);
+	const client = fromWorkspace("tests/anchor-example");
+	const provider = new LiteSVMProvider(client);
 
 	const puppetProgram = new Program<Puppet>(IDL, provider);
 
@@ -79,17 +74,13 @@ test("error test", async () => {
 	await expect(wrap).rejects.toHaveProperty("logs", expectedLogs);
 });
 
-test("bankrun provider with wallet", async () => {
-	const context = await startAnchor("tests/anchor-example", [], []);
-
-	const provider = new BankrunProvider(context);
-
-	expect(provider.publicKey.equals(context.payer.publicKey));
+test("litesvm provider with wallet", async () => {
+	const client = fromWorkspace("tests/anchor-example");
 
 	// another provider from a second wallet
-	const wallet = new NodeWallet(Keypair.generate());
+	const wallet = new Wallet(Keypair.generate());
 
-	const newProvider = new BankrunProvider(context, wallet);
+	const newProvider = new LiteSVMProvider(client, wallet);
 
 	expect(wallet.publicKey.equals(newProvider.publicKey));
 });

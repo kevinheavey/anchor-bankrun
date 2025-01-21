@@ -12,13 +12,16 @@ import {
 	TransactionSignature,
 	VersionedTransaction,
 	SendTransactionError,
+	Keypair,
+	LAMPORTS_PER_SOL,
 } from "@solana/web3.js";
 import { Provider, Wallet } from "@coral-xyz/anchor";
-import { BanksClient, ProgramTestContext } from "solana-bankrun";
+import { FailedTransactionMetadata, LiteSVM } from "litesvm";
 import bs58 from "bs58";
-import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { SuccessfulTxSimulationResponse } from "@coral-xyz/anchor/dist/cjs/utils/rpc";
-export { startAnchor } from "solana-bankrun";
+import * as path from "path";
+import { readFileSync } from "fs";
+import * as TOML from "@iarna/toml";
 
 interface ConnectionInterface {
 	getAccountInfo: Connection["getAccountInfo"];
@@ -26,17 +29,17 @@ interface ConnectionInterface {
 	getMinimumBalanceForRentExemption: Connection["getMinimumBalanceForRentExemption"];
 }
 
-class BankrunConnectionProxy implements ConnectionInterface {
-	constructor(private banksClient: BanksClient) {}
+class LiteSVMConnectionProxy implements ConnectionInterface {
+	constructor(private client: LiteSVM) {}
 	async getAccountInfoAndContext(
 		publicKey: PublicKey,
-		commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined,
+		_commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined,
 	): Promise<RpcResponseAndContext<AccountInfo<Buffer>>> {
-		const accountInfoBytes = await this.banksClient.getAccount(publicKey);
+		const accountInfoBytes = this.client.getAccount(publicKey);
 		if (!accountInfoBytes)
 			throw new Error(`Could not find ${publicKey.toBase58()}`);
 		return {
-			context: { slot: Number(await this.banksClient.getSlot()) },
+			context: { slot: Number(this.client.getClock().slot) },
 			value: {
 				...accountInfoBytes,
 				data: Buffer.from(accountInfoBytes.data),
@@ -45,9 +48,9 @@ class BankrunConnectionProxy implements ConnectionInterface {
 	}
 	async getAccountInfo(
 		publicKey: PublicKey,
-		commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined,
+		_commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined,
 	): Promise<AccountInfo<Buffer>> {
-		const accountInfoBytes = await this.banksClient.getAccount(publicKey);
+		const accountInfoBytes = this.client.getAccount(publicKey);
 		if (!accountInfoBytes)
 			throw new Error(`Could not find ${publicKey.toBase58()}`);
 		return {
@@ -57,49 +60,42 @@ class BankrunConnectionProxy implements ConnectionInterface {
 	}
 	async getMinimumBalanceForRentExemption(
 		dataLength: number,
-		commitment?: Commitment,
+		_commitment?: Commitment,
 	): Promise<number> {
-		const rent = await this.banksClient.getRent();
+		const rent = this.client.getRent();
 		return Number(rent.minimumBalance(BigInt(dataLength)));
 	}
 }
 
-async function sendWithErr(
-	tx: Transaction | VersionedTransaction,
-	client: BanksClient,
-) {
-	const res = await client.tryProcessTransaction(tx);
-	const maybeMeta = res.meta;
-	const errMsg = res.result;
-	if (errMsg !== null) {
-		if (maybeMeta !== null) {
-			const logs = maybeMeta.logMessages;
-			throw new SendTransactionError({
-				action: "send",
-				signature: "",
-				transactionMessage: errMsg,
-				logs: logs,
-			});
-		} else {
-			throw new SendTransactionError({
-				action: "send",
-				signature: "",
-				transactionMessage: errMsg,
-				logs: [],
-			});
-		}
+function sendWithErr(tx: Transaction | VersionedTransaction, client: LiteSVM) {
+	const res = client.sendTransaction(tx);
+	if (res instanceof FailedTransactionMetadata) {
+		const sigRaw = tx instanceof Transaction ? tx.signature : tx.signatures[0];
+		const signature = bs58.encode(sigRaw);
+		throw new SendTransactionError({
+			action: "send",
+			signature,
+			transactionMessage: res.err().toString(),
+			logs: res.meta().logs(),
+		});
 	}
 }
 
-export class BankrunProvider implements Provider {
+export class LiteSVMProvider implements Provider {
 	wallet: Wallet;
 	connection: Connection;
 	publicKey: PublicKey;
 
-	constructor(public context: ProgramTestContext, wallet?: Wallet) {
-		this.wallet = wallet || new NodeWallet(context.payer);
-		this.connection = new BankrunConnectionProxy(
-			context.banksClient,
+	constructor(public client: LiteSVM, wallet?: Wallet) {
+		if (wallet == null) {
+			const payer = new Keypair();
+			client.airdrop(payer.publicKey, BigInt(LAMPORTS_PER_SOL));
+			this.wallet = new Wallet(payer);
+		} else {
+			this.wallet = wallet;
+		}
+		this.connection = new LiteSVMConnectionProxy(
+			client,
 		) as unknown as Connection; // uh
 		this.publicKey = this.wallet.publicKey;
 	}
@@ -107,15 +103,13 @@ export class BankrunProvider implements Provider {
 	async send?(
 		tx: Transaction | VersionedTransaction,
 		signers?: Signer[] | undefined,
-		opts?: SendOptions | undefined,
+		_opts?: SendOptions | undefined,
 	): Promise<string> {
 		if ("version" in tx) {
 			signers?.forEach((signer) => tx.sign([signer]));
 		} else {
 			tx.feePayer = tx.feePayer ?? this.wallet.publicKey;
-			tx.recentBlockhash = (
-				await this.context.banksClient.getLatestBlockhash()
-			)[0];
+			tx.recentBlockhash = this.client.latestBlockhash();
 
 			signers?.forEach((signer) => tx.partialSign(signer));
 		}
@@ -128,21 +122,19 @@ export class BankrunProvider implements Provider {
 			if (!tx.signature) throw new Error("Missing fee payer signature");
 			signature = bs58.encode(tx.signature);
 		}
-		await this.context.banksClient.sendTransaction(tx);
+		this.client.sendTransaction(tx);
 		return signature;
 	}
 	async sendAndConfirm?(
 		tx: Transaction | VersionedTransaction,
 		signers?: Signer[] | undefined,
-		opts?: ConfirmOptions | undefined,
+		_opts?: ConfirmOptions | undefined,
 	): Promise<string> {
 		if ("version" in tx) {
 			signers?.forEach((signer) => tx.sign([signer]));
 		} else {
 			tx.feePayer = tx.feePayer ?? this.wallet.publicKey;
-			tx.recentBlockhash = (
-				await this.context.banksClient.getLatestBlockhash()
-			)[0];
+			tx.recentBlockhash = this.client.latestBlockhash();
 
 			signers?.forEach((signer) => tx.partialSign(signer));
 		}
@@ -155,16 +147,14 @@ export class BankrunProvider implements Provider {
 			if (!tx.signature) throw new Error("Missing fee payer signature");
 			signature = bs58.encode(tx.signature);
 		}
-		await sendWithErr(tx, this.context.banksClient);
+		sendWithErr(tx, this.client);
 		return signature;
 	}
 	async sendAll<T extends Transaction | VersionedTransaction>(
 		txWithSigners: { tx: T; signers?: Signer[] | undefined }[],
-		opts?: ConfirmOptions | undefined,
+		_opts?: ConfirmOptions | undefined,
 	): Promise<string[]> {
-		const recentBlockhash = (
-			await this.context.banksClient.getLatestBlockhash()
-		)[0];
+		const recentBlockhash = this.client.latestBlockhash();
 
 		const txs = txWithSigners.map((r) => {
 			if ("version" in r.tx) {
@@ -192,50 +182,71 @@ export class BankrunProvider implements Provider {
 
 		for (let k = 0; k < txs.length; k += 1) {
 			const tx = signedTxs[k];
-			const rawTx = tx.serialize();
 			if ("version" in tx) {
 				sigs.push(bs58.encode(tx.signatures[0]));
 			} else {
 				sigs.push(bs58.encode(tx.signature));
 			}
-			await sendWithErr(tx, this.context.banksClient);
+			sendWithErr(tx, this.client);
 		}
-		return sigs;
+		return Promise.resolve(sigs);
 	}
 	async simulate(
 		tx: Transaction | VersionedTransaction,
 		signers?: Signer[] | undefined,
-		commitment?: Commitment | undefined,
+		_commitment?: Commitment | undefined,
 		includeAccounts?: boolean | PublicKey[] | undefined,
 	): Promise<SuccessfulTxSimulationResponse> {
 		if (includeAccounts !== undefined) {
-			throw new Error("includeAccounts cannot be used with BankrunProvider");
+			throw new Error("includeAccounts cannot be used with LiteSVMProvider");
 		}
 		if ("version" in tx) {
 			signers?.forEach((signer) => tx.sign([signer]));
 		} else {
 			tx.feePayer = tx.feePayer ?? this.wallet.publicKey;
-			tx.recentBlockhash = (
-				await this.context.banksClient.getLatestBlockhash()
-			)[0];
+			tx.recentBlockhash = this.client.latestBlockhash();
 
 			signers?.forEach((signer) => tx.partialSign(signer));
 		}
-		const rawResult = await this.context.banksClient.simulateTransaction(
-			tx,
-			commitment,
-		);
-		const returnDataRaw = rawResult.meta.returnData;
-		const b64 = Buffer.from(returnDataRaw.data).toString("base64");
+		const rawResult = this.client.simulateTransaction(tx);
+		if (rawResult instanceof FailedTransactionMetadata) {
+			const sigRaw = tx instanceof Transaction ? tx.signature : tx.signatures[0];
+			const signature = bs58.encode(sigRaw);
+			throw new SendTransactionError({
+				action: "simulate",
+				signature,
+				transactionMessage: rawResult.err().toString(),
+				logs: rawResult.meta().logs(),
+			});
+		}
+		const returnDataRaw = rawResult.meta().returnData();
+		const b64 = Buffer.from(returnDataRaw.data()).toString("base64");
 		const data: [string, "base64"] = [b64, "base64"];
 		const returnData = {
 			programId: returnDataRaw.programId.toString(),
 			data,
 		};
 		return {
-			logs: rawResult.meta.logMessages,
-			unitsConsumed: Number(rawResult.meta.computeUnitsConsumed),
+			logs: rawResult.meta().logs(),
+			unitsConsumed: Number(rawResult.meta().computeUnitsConsumed),
 			returnData,
 		};
 	}
+}
+
+export function fromWorkspace(workspacePath: string): LiteSVM {
+	const sbfOutDir = path.join(workspacePath, "target/deploy");
+	const anchorTomlPath = path.join(workspacePath, "Anchor.toml");
+	const tomlStr = readFileSync(anchorTomlPath).toString();
+	const parsedToml = TOML.parse(tomlStr);
+	const programs = (parsedToml["programs"] as TOML.JsonMap)[
+		"localnet"
+	] as TOML.JsonMap;
+	const svm = new LiteSVM();
+	Object.keys(programs).forEach((key) => {
+		const id = programs[key] as string;
+		const programPath = path.join(sbfOutDir, `${key}.so`);
+		svm.addProgramFromFile(new PublicKey(id), programPath);
+	});
+	return svm;
 }
