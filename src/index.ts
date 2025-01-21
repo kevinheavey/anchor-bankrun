@@ -33,7 +33,7 @@ class LiteSVMConnectionProxy implements ConnectionInterface {
 	constructor(private client: LiteSVM) {}
 	async getAccountInfoAndContext(
 		publicKey: PublicKey,
-		commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined,
+		_commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined,
 	): Promise<RpcResponseAndContext<AccountInfo<Buffer>>> {
 		const accountInfoBytes = this.client.getAccount(publicKey);
 		if (!accountInfoBytes)
@@ -48,7 +48,7 @@ class LiteSVMConnectionProxy implements ConnectionInterface {
 	}
 	async getAccountInfo(
 		publicKey: PublicKey,
-		commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined,
+		_commitmentOrConfig?: Commitment | GetAccountInfoConfig | undefined,
 	): Promise<AccountInfo<Buffer>> {
 		const accountInfoBytes = this.client.getAccount(publicKey);
 		if (!accountInfoBytes)
@@ -60,7 +60,7 @@ class LiteSVMConnectionProxy implements ConnectionInterface {
 	}
 	async getMinimumBalanceForRentExemption(
 		dataLength: number,
-		commitment?: Commitment,
+		_commitment?: Commitment,
 	): Promise<number> {
 		const rent = this.client.getRent();
 		return Number(rent.minimumBalance(BigInt(dataLength)));
@@ -103,7 +103,7 @@ export class LiteSVMProvider implements Provider {
 	async send?(
 		tx: Transaction | VersionedTransaction,
 		signers?: Signer[] | undefined,
-		opts?: SendOptions | undefined,
+		_opts?: SendOptions | undefined,
 	): Promise<string> {
 		if ("version" in tx) {
 			signers?.forEach((signer) => tx.sign([signer]));
@@ -128,7 +128,7 @@ export class LiteSVMProvider implements Provider {
 	async sendAndConfirm?(
 		tx: Transaction | VersionedTransaction,
 		signers?: Signer[] | undefined,
-		opts?: ConfirmOptions | undefined,
+		_opts?: ConfirmOptions | undefined,
 	): Promise<string> {
 		if ("version" in tx) {
 			signers?.forEach((signer) => tx.sign([signer]));
@@ -152,7 +152,7 @@ export class LiteSVMProvider implements Provider {
 	}
 	async sendAll<T extends Transaction | VersionedTransaction>(
 		txWithSigners: { tx: T; signers?: Signer[] | undefined }[],
-		opts?: ConfirmOptions | undefined,
+		_opts?: ConfirmOptions | undefined,
 	): Promise<string[]> {
 		const recentBlockhash = this.client.latestBlockhash();
 
@@ -194,7 +194,7 @@ export class LiteSVMProvider implements Provider {
 	async simulate(
 		tx: Transaction | VersionedTransaction,
 		signers?: Signer[] | undefined,
-		commitment?: Commitment | undefined,
+		_commitment?: Commitment | undefined,
 		includeAccounts?: boolean | PublicKey[] | undefined,
 	): Promise<SuccessfulTxSimulationResponse> {
 		if (includeAccounts !== undefined) {
