@@ -339,6 +339,11 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
+"@iarna/toml@^2.2.5":
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
+  integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -811,6 +816,13 @@
   version "12.20.55"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.55.tgz#c329cbd434c42164f846b909bd6f85b5537f6240"
   integrity sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==
+
+"@types/node@^22.10.7":
+  version "22.10.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.10.7.tgz#14a1ca33fd0ebdd9d63593ed8d3fbc882a6d28d7"
+  integrity sha512-V09KvXxFiutGp6B7XkpaDXlNadZxrzajcY50EuoLIpQ6WWYCSvf19lVIazzfIzQvhUN2HjX12spLojTnhuKlGg==
+  dependencies:
+    undici-types "~6.20.0"
 
 "@types/stack-utils@^2.0.0":
   version "2.0.3"
@@ -2144,6 +2156,45 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.2.4.tgz#eca284f75d2965079309dc0ad9255abb2ebc1632"
   integrity sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==
 
+litesvm-darwin-arm64@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/litesvm-darwin-arm64/-/litesvm-darwin-arm64-0.0.2.tgz#6a1fa4c91b0865ae54a2542f693648df3b780c89"
+  integrity sha512-l4kANu08moiMFI45UCcp8AhrwgHwXrIHckrmHySnsTIyIz38l+rMdxnu2e4uB2k7L2FHOb2fBCvXy2SOqEeHUA==
+
+litesvm-darwin-universal@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/litesvm-darwin-universal/-/litesvm-darwin-universal-0.0.2.tgz#ef07720b1385d519f414b8e9a0951adcb7154bef"
+  integrity sha512-D//3Lgzr8meyAGX5ZFXsc8EChNCZ20hr/scxev/vGDEO4McEM6naQYE2mshXpmVNq6poG9QW2L74g2tAJjeOWg==
+
+litesvm-darwin-x64@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/litesvm-darwin-x64/-/litesvm-darwin-x64-0.0.2.tgz#1bd6650152bcdf3c9050566047a276e0689727dc"
+  integrity sha512-vlC0hb/q5J23nu2K1L0++HrHJexg9EDik10ZCy2M+qhW23qlcEVXUqrpBf40sfqT8pGcr0FXzaodTqY371ksoA==
+
+litesvm-linux-x64-gnu@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/litesvm-linux-x64-gnu/-/litesvm-linux-x64-gnu-0.0.2.tgz#e45af624428e1452b63d63bfa4fa314e2775ecef"
+  integrity sha512-s1TrcNBvDaUJLr+PnMz8Lx/QFVG4m5qZk8sWAWuNpDwD/5nlnnXKWloCJaC82MHkTyRnESRzNnvkUZLBHXSk3w==
+
+litesvm-linux-x64-musl@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/litesvm-linux-x64-musl/-/litesvm-linux-x64-musl-0.0.2.tgz#66cc4d2eb1a204593788cd441d8062070b9cc22f"
+  integrity sha512-jXDrNvl7wh7Ee9ukVm9/MrkA0R1IzoGDlIk8mX+HGuvpkCCf288GLgNsRRzNJCECPDyUuydZJDmYFAj61a/u4A==
+
+litesvm@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/litesvm/-/litesvm-0.0.2.tgz#712dd00fdf872e09d00bd73f2ecca0d7434db6ae"
+  integrity sha512-boYCypJ5E+c44P+SzwMksN8IZ+z36tDlS/Q4ay+2BHXNsEzkB0KDjYufKifgtHcZ4gNwIZxjzKYxfN/h3adb9g==
+  dependencies:
+    "@solana/web3.js" "^1.68.0"
+    bs58 "^4.0.1"
+  optionalDependencies:
+    litesvm-darwin-arm64 "0.0.2"
+    litesvm-darwin-universal "0.0.2"
+    litesvm-darwin-x64 "0.0.2"
+    litesvm-linux-x64-gnu "0.0.2"
+    litesvm-linux-x64-musl "0.0.2"
+
 locate-path@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-5.0.0.tgz#1afba396afd676a6d42504d0a67a3a7eb9f62aa0"
@@ -2523,45 +2574,6 @@ snake-case@^3.0.4:
     dot-case "^3.0.4"
     tslib "^2.0.3"
 
-solana-bankrun-darwin-arm64@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/solana-bankrun-darwin-arm64/-/solana-bankrun-darwin-arm64-0.4.0.tgz#eb0f3dfffb1675f6329a1e026b12d09222b33986"
-  integrity sha512-6dz78Teoz7ez/3lpRLDjktYLJb79FcmJk2me4/YaB8WiO6W43OdExU4h+d2FyuAryO2DgBPXaBoBNY/8J1HJmw==
-
-solana-bankrun-darwin-universal@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/solana-bankrun-darwin-universal/-/solana-bankrun-darwin-universal-0.4.0.tgz#0ac13ec7637b334b1030e6f51abecc50a254b5de"
-  integrity sha512-zSSw/Jx3KNU42pPMmrEWABd0nOwGJfsj7nm9chVZ3ae7WQg3Uty0hHAkn5NSDCj3OOiN0py9Dr1l9vmRJpOOxg==
-
-solana-bankrun-darwin-x64@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/solana-bankrun-darwin-x64/-/solana-bankrun-darwin-x64-0.4.0.tgz#f863c5a668858b7c44be51376bd05fb077c11c99"
-  integrity sha512-LWjs5fsgHFtyr7YdJR6r0Ho5zrtzI6CY4wvwPXr8H2m3b4pZe6RLIZjQtabCav4cguc14G0K8yQB2PTMuGub8w==
-
-solana-bankrun-linux-x64-gnu@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/solana-bankrun-linux-x64-gnu/-/solana-bankrun-linux-x64-gnu-0.4.0.tgz#30fd7edaf3ff6585468138d3bed6eaed37878d9e"
-  integrity sha512-SrlVrb82UIxt21Zr/XZFHVV/h9zd2/nP25PMpLJVLD7Pgl2yhkhfi82xj3OjxoQqWe+zkBJ+uszA0EEKr67yNw==
-
-solana-bankrun-linux-x64-musl@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/solana-bankrun-linux-x64-musl/-/solana-bankrun-linux-x64-musl-0.4.0.tgz#3c870218140b1307dc44b51d2282697c99f2e1e4"
-  integrity sha512-Nv328ZanmURdYfcLL+jwB1oMzX4ZzK57NwIcuJjGlf0XSNLq96EoaO5buEiUTo4Ls7MqqMyLbClHcrPE7/aKyA==
-
-"solana-bankrun@>=0.2.0 <0.5.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/solana-bankrun/-/solana-bankrun-0.4.0.tgz#a48a7a74ce6c56be4ec7e200336026f65e90b8dc"
-  integrity sha512-NMmXUipPBkt8NgnyNO3SCnPERP6xT/AMNMBooljGA3+rG6NN8lmXJsKeLqQTiFsDeWD74U++QM/DgcueSWvrIg==
-  dependencies:
-    "@solana/web3.js" "^1.68.0"
-    bs58 "^4.0.1"
-  optionalDependencies:
-    solana-bankrun-darwin-arm64 "0.4.0"
-    solana-bankrun-darwin-universal "0.4.0"
-    solana-bankrun-darwin-x64 "0.4.0"
-    solana-bankrun-linux-x64-gnu "0.4.0"
-    solana-bankrun-linux-x64-musl "0.4.0"
-
 source-map-support@0.5.13:
   version "0.5.13"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.13.tgz#31b24a9c2e73c2de85066c0feb7d44767ed52932"
@@ -2766,6 +2778,11 @@ undici-types@~6.19.2:
   version "6.19.8"
   resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.19.8.tgz#35111c9d1437ab83a7cdc0abae2f26d88eda0a02"
   integrity sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==
+
+undici-types@~6.20.0:
+  version "6.20.0"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.20.0.tgz#8171bf22c1f588d1554d55bf204bc624af388433"
+  integrity sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==
 
 update-browserslist-db@^1.1.0:
   version "1.1.1"
